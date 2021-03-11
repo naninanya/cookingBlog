@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}日記一覧{% endblock %}
+
+{% block head %}
+<!-- Custom styles for this template -->
+<link href="{% static 'css/blog-home.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block contents %}
+<!-- Blog Entries Column -->
+<div class="col-md-8">
+  <h1 class="my-4">SIer夫婦の料理日記
+    <!-- <small>Secondary Text</small> -->
+  </h1>
+
+  <!-- Blog Post -->
+  {% for diary in diary_list %}
+  <div class="card mb-4">
+    <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+    <div class="card-body">
+      <h2 class="card-title">{{ diary.title}}</h2>
+      <p class="card-text">{{diary.content|truncatechars:200}}</p>
+      <a href="{% url 'myApp:diary_detail' diary.pk%}" class="btn btn-primary">詳細 &rarr;</a>
+    </div>
+    <div class="card-footer text-muted">
+      {{diary.created_at}}
+    </div>
+  </div>
+  {% empty %}
+  <p>日記がありません</p>
+  {% endfor%}
+
+  <!-- Pagination -->
+  <ul class="pagination justify-content-center mb-4">
+    <li class="page-item">
+      <a class="page-link" href="#">&larr; Older</a>
+    </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="#">Newer &rarr;</a>
+    </li>
+  </ul>
+
+</div>
+{% endblock %}

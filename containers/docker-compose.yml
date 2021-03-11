@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: myPostgres
+    hostname: dbServer
+    image: postgres:10
+    environment: 
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks: 
+      djangonet:
+        ipv4_address: 172.16.238.5
+    ports:
+      - 5432:5432
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+
+  django:
+    container_name: myDjango
+    build: ./django
+    command: gunicorn --bind 172.16.238.6:8000
+             sample.wsgi:application
+    # command: python manage.py runserver 172.16.238.6:8000 
+    volumes: 
+      - ./django:/code
+      - ./django/static:/usr/src/app/static
+    environment: 
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks: 
+      djangonet:
+        ipv4_address: 172.16.238.6
+
+    ports: 
+      - 8000:8000
+    depends_on: 
+      - postgres
+
+  nginx:
+    container_name: myNginx
+    hostname: webServer
+    build: ./nginx
+    volumes:
+      - ./django/static:/usr/src/app/static
+    networks:
+      djangonet:
+        ipv4_address: 172.16.238.7
+    ports:
+      - 80:80
+    depends_on: 
+      - django
+
+networks: 
+  djangonet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+
+volumes: 
+  postgres_data:
