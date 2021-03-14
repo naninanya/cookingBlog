@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'markdownx',
 
     'myApp.apps.MyappConfig',
+    'twitterManager.apps.TwittermanagerConfig',
 ]
 
 REST_RRAMEWORK = {
