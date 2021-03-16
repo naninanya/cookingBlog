@@ -21,7 +21,9 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myApp.urls')),
+    path('user/',include('twitterManager.urls')),
+    path('user/',include('social_django.urls')),
+    path('diary_list',include('myApp.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
